@@ -1,20 +1,20 @@
 # Create a venv environment
-# Pip install required packages: pip install -r requirements.txt
-#
+Pip install required packages: pip install -r requirements.txt
 
+# Assign to compute engine service account "Service Account User" role
+# You might need IAM Admin/Supervisor roles.
 
-# starts Ray on the cluster of nodes.
+# Starts Ray on the cluster of nodes.
 ray up tune-default.yaml
 
+# Submit the hyperparameter tuning job on ray cluster
 ray submit tune-default.yaml tune_script.py --start -- --ray-address=localhost:6379
 
 # Go to http://localhost:6006 to access TensorBoard.
 ray exec tune-default.yaml 'tensorboard --logdir=~/ray_results/ --port 6006' --port-forward 6006
 
-# Across your machines, Tune will automatically detect the number of GPUs and CPUs without you needing to manage
-# CUDA_VISIBLE_DEVICES.
+# Attach to cluster head node
+ray attach ray-hpo-tutorial/tune-default.yaml
 
-# To execute a distributed experiment, call ray.init(address=XXX) before tune.run,
-# where XXX is the Ray address, which defaults to localhost:6379
-# The Tune python script should be executed only on the head node of the Ray cluster.
-
+# Shut down the cluster
+ray down tune-default.yaml
